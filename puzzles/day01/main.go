@@ -35,26 +35,20 @@ func part2(name string) int {
 	columns := files.ReadColumns(name, 2)
 
 	columnsA := slices.SortSlice(ints.FromStringSlice(columns[0]))
-	columnsB := slices.SortSlice(ints.FromStringSlice(columns[1]))
+	columnsB := ints.FromStringSlice(columns[1])
+
+	freqMap := make(map[int]int)
+	for _, num := range columnsB {
+		freqMap[num]++
+	}
 
 	similarity := 0
 
-	for i := 0; i < len(columnsA); i++ {
-		appearances := occurences(columnsB, columnsA[i])
-
-		similarity += columnsA[i] * appearances
-	}
-
-	return similarity
-}
-
-func occurences(col []int, input int) int {
-	sum := 0
-	for i := 0; i < len(col); i++ {
-		if col[i] == input {
-			sum++
+	for _, num := range columnsA {
+		if count, exists := freqMap[num]; exists {
+			similarity += num * count
 		}
 	}
 
-	return sum
+	return similarity
 }
