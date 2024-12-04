@@ -69,18 +69,22 @@ func part2(name string) int {
 
 	for row := 1; row < rows-1; row++ {
 		for col := 1; col < cols-1; col++ {
-			// Check center is 'A'
 			if input[row][col] != 'A' {
 				continue
 			}
 
-			// Check if we have M's and S's in X pattern
-			topLeft := input[row-1][col-1] == 'M'
-			topRight := input[row-1][col+1] == 'S'
-			bottomLeft := input[row+1][col-1] == 'M'
-			bottomRight := input[row+1][col+1] == 'S'
+			topLeft := input[row-1][col-1]
+			topRight := input[row-1][col+1]
+			bottomLeft := input[row+1][col-1]
+			bottomRight := input[row+1][col+1]
 
-			if topLeft && topRight && bottomLeft && bottomRight {
+			diag1MAS := (topLeft == 'M' && bottomRight == 'S')
+			diag1SAM := (topLeft == 'S' && bottomRight == 'M')
+
+			diag2MAS := (topRight == 'M' && bottomLeft == 'S')
+			diag2SAM := (topRight == 'S' && bottomLeft == 'M')
+
+			if (diag1MAS || diag1SAM) && (diag2MAS || diag2SAM) {
 				count++
 			}
 		}
