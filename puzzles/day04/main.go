@@ -61,5 +61,30 @@ func part1(name string) int {
 }
 
 func part2(name string) int {
-	return 0
+	input := files.ReadLines(name)
+	count := 0
+
+	rows := len(input)
+	cols := len(input[0])
+
+	for row := 1; row < rows-1; row++ {
+		for col := 1; col < cols-1; col++ {
+			// Check center is 'A'
+			if input[row][col] != 'A' {
+				continue
+			}
+
+			// Check if we have M's and S's in X pattern
+			topLeft := input[row-1][col-1] == 'M'
+			topRight := input[row-1][col+1] == 'S'
+			bottomLeft := input[row+1][col-1] == 'M'
+			bottomRight := input[row+1][col+1] == 'S'
+
+			if topLeft && topRight && bottomLeft && bottomRight {
+				count++
+			}
+		}
+	}
+
+	return count
 }
