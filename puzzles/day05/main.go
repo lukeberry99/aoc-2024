@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/lukeberry99/aoc-2024/pkg/files"
+	"github.com/lukeberry99/aoc-2024/pkg/slices"
 )
 
 func main() {
@@ -84,5 +85,63 @@ func findMiddlePage(update []int) int {
 }
 
 func part2(name string) int {
-	return 0
+	input := files.ReadParagraphs(name)
+
+	rulesInput := input[0]
+	updatesInput := input[1]
+
+	rules := parseRules(rulesInput)
+	updates := parseUpdates(updatesInput)
+
+	sumMiddlePages := 0
+	for _, update := range updates {
+		if !isCorrectlyOrdered(update, rules) {
+			correctedUpdate := reorderUpdate(update, rules)
+			sumMiddlePages += findMiddlePage(correctedUpdate)
+		}
+	}
+
+	return sumMiddlePages
+}
+
+// topological sort implementation
+func reorderUpdate(update []int, rules map[int][]int) []int {
+	graph := make(map[int][]int)
+	inDegree := make(map[int]int)
+
+	for _, page := range update {
+		inDegree[page] = 0
+	}
+
+	for x, ys := range rules {
+		for _, y := range ys {
+			if slices.SliceContains(update, x) && slices.SliceContains(update, y) {
+				graph[x] = append(graph[x], y)
+				inDegree[y]++
+			}
+		}
+	}
+
+	var queue []int
+	for _, page := range update {
+		if inDegree[page] == 0 {
+			queue = append(queue, page)
+		}
+	}
+
+	var sorted []int
+	for len(queue) > 0 {
+		node := queue[0]
+		queue = queue[1:]
+		sorted = append(sorted, node)
+
+		for _, neighbour := range graph[node] {
+			inDegree[neighbour]--
+			if inDegree[neighbour] == 0 {
+				queue = append(queue, neighbour)
+			}
+		}
+	}
+
+	return sorted
 }

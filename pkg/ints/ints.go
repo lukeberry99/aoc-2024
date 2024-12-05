@@ -52,3 +52,13 @@ func AllSame(numbers []int) bool {
 	}
 	return true
 }
+
+func Contains(slice []int, element int) bool {
+	for _, e := range slice {
+		if e == element {
+			return true
+		}
+	}
+
+	return false
+}
