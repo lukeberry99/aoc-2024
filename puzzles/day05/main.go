@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/lukeberry99/aoc-2024/pkg/files"
+	"github.com/lukeberry99/aoc-2024/pkg/ints"
 	"github.com/lukeberry99/aoc-2024/pkg/slices"
 )
 
@@ -37,9 +37,9 @@ func parseRules(rulesInput []string) map[int][]int {
 	rules := make(map[int][]int)
 	for _, rule := range rulesInput {
 		parts := strings.Split(rule, "|")
-		x, _ := strconv.Atoi(parts[0])
-		y, _ := strconv.Atoi(parts[1])
-		rules[x] = append(rules[x], y)
+		sourcePage := ints.FromString(parts[0])
+		targetPage := ints.FromString(parts[1])
+		rules[sourcePage] = append(rules[sourcePage], targetPage)
 	}
 	return rules
 }
@@ -50,7 +50,7 @@ func parseUpdates(updatesInput []string) [][]int {
 		pageStrings := strings.Split(update, ",")
 		var pages []int
 		for _, page := range pageStrings {
-			p, _ := strconv.Atoi(page)
+			p := ints.FromString(page)
 			pages = append(pages, p)
 		}
 		updates = append(updates, pages)
@@ -104,7 +104,6 @@ func part2(name string) int {
 	return sumMiddlePages
 }
 
-// topological sort implementation
 func reorderUpdate(update []int, rules map[int][]int) []int {
 	graph := make(map[int][]int)
 	inDegree := make(map[int]int)
